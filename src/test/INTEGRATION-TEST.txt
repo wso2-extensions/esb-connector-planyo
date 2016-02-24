@@ -23,7 +23,7 @@ Steps to follow in setting integration test.
  3. Follow the below mentioned steps for adding valid certificate to access Planyo API over https.
 
 	i) 	 Extract the certificate from browser(Mozilla Firefox) by navigating to https://api.planyo.com
-	ii)  Go to new ESB folder and place the downloaded certificate in both "<ESB_HOME>/repository/resources/security/" and "{PLANYO_CONNECTOR_HOME}/planyo-connector/planyo-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/keystores/products/" folders.
+	ii)  Go to new ESB folder and place the downloaded certificate in both "<ESB_HOME>/repository/resources/security/" and "{PLANYO_CONNECTOR_HOME}/src/test/resources/keystores/products/" folders.
 	iii) Navigate to "<ESB_HOME>/repository/resources/security/" using command prompt and execute the following command.
 	
 				keytool -importcert -file CERT_FILE_NAME -keystore client-truststore.jks -alias "CERT_NAME" 
@@ -34,7 +34,7 @@ Steps to follow in setting integration test.
 		 NOTE : CERT_FILE_NAME - Replace CERT_FILE_NAME with the file name that was extracted from Planyo with the extension. (e.g. planyo.crt)
 			    CERT_NAME - Replace CERT_NAME with an arbitrary name for the certificate. (e.g. Planyo)
 				
-	iv)  Navigate to "{PLANYO_CONNECTOR_HOME}/planyo-connector/planyo-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/keystores/products/" using command prompt and execute the following command.
+	iv)  Navigate to "{PLANYO_CONNECTOR_HOME}/src/test/resources/keystores/products/" using command prompt and execute the following command.
 	
 				keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "CERT_NAME" 
 				
@@ -74,7 +74,7 @@ Steps to follow in setting integration test.
 				- Add the voucher by giving required details in the 'Enter new item' section.
 				- Make sure to assign this voucher to created resource in step 7(iii).
 		
- 8. Update the properties in 'planyo.properties' file at location "{PLANYO_CONNECTOR_HOME}/planyo-connector/planyo-connector-1.0.0/org.wso2.carbon.connector/src/test/resources/artifacts/ESB/connector/config" as below.
+ 8. Update the properties in 'planyo.properties' file at location "{PLANYO_CONNECTOR_HOME}/src/test/resources/artifacts/ESB/connector/config" as below.
 	
 	i) 		apiUrl 		          - Use the API URL as "http://api.planyo.com".
 	ii)		apiKey 		          - Provide the Planyo API key.
