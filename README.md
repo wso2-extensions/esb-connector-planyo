@@ -1,4 +1,4 @@
-# esb-connector-planyo
+# Planyo ESB Connector
 The Planyo connector allows you to access the Planyo REST API through the WSO2 ESB. Planyo is an online booking system for any kind of resources such as tennis courts, hotels, holiday apartments, appointments, events, etc.
 
 ###Build
