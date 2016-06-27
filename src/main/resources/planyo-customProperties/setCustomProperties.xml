@@ -74,7 +74,7 @@
                }
                if(propertyNames != ''){
                   // Removes unwanted comma at the end
-                  propertyNames = propertyNames.substring(0,propertyNames.length - 1);
+                  propertyNames = propertyNames.toString().substring(0,propertyNames.toString().lastIndexOf(","));
                   payload.names = propertyNames;
                }
             }
