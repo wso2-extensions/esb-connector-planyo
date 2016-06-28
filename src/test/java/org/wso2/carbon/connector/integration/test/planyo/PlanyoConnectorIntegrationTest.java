@@ -57,7 +57,7 @@ public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase
    @BeforeClass(alwaysRun = true)
    public void setEnvironment() throws Exception {
    
-      init("planyo-connector-1.0.1-SNAPSHOT");
+      init("planyo-connector-1.0.1");
       
       esbRequestHeadersMap = new HashMap<String, String>();
       apiRequestHeadersMap = new HashMap<String, String>();
