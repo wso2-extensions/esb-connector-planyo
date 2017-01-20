@@ -18,6 +18,15 @@
 
 package org.wso2.carbon.connector.integration.test.planyo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
+import org.wso2.connector.integration.test.base.RestResponse;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -27,15 +36,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
-import org.wso2.connector.integration.test.base.RestResponse;
 
 public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase {
    
@@ -411,88 +411,14 @@ public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase
       
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listUsers_mandatory.json");
-      
-      String userId =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("id");
-      
-      connectorProperties.put("userId", userId);
-      
+
       String apiEndPoint = apiUrl + "?api_key=" + connectorProperties.getProperty("apiKey") + "&method=list_users";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-      
-      int esbUserCount = esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").length();
-      int apiUserCount = apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").length();
-      
-      Assert.assertEquals(esbUserCount, apiUserCount);
-      
-      String esbEmail =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("email");
-      String apiEmail =
-            apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("email");
-      
-      Assert.assertEquals(esbEmail, apiEmail);
-      
-      String esbRegistrationTime =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0)
-                  .getString("registration_time");
-      String apiRegistrationTime =
-            apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0)
-                  .getString("registration_time");
-      
-      Assert.assertEquals(esbRegistrationTime, apiRegistrationTime);
-      
+
+       Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+
    }
-   
-   /**
-    * Positive test case for listUsers method with optional parameters.
-    * 
-    * @throws IOException Signals that an I/O exception has occurred.
-    * @throws JSONException if JSON exception occurred.
-    */
-   @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testListUsersWithMandatoryParameters" }, description = "planyo {listUsers} integration test with optional parameters.")
-   public void testListUsersWithOptionalParameters() throws IOException, JSONException {
-   
-      esbRequestHeadersMap.put("Action", "urn:listUsers");
-      
-      RestResponse<JSONObject> esbRestResponse =
-            sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listUsers_optional.json");
-      
-      String apiEndPoint =
-            apiUrl + "?api_key=" + connectorProperties.getProperty("apiKey") + "&method=list_users&email="
-                  + connectorProperties.getProperty("email") + "&detail_level=4&page_size=1";
-      RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-      
-      int esbUserCount = esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").length();
-      int apiUserCount = apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").length();
-      
-      Assert.assertEquals(esbUserCount, apiUserCount);
-      
-      String esbUserId =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("id");
-      String apiUserId =
-            apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("id");
-      
-      Assert.assertEquals(esbUserId, apiUserId);
-      
-      String esbEmail =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("email");
-      String apiEmail =
-            apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0).getString("email");
-      
-      Assert.assertEquals(esbEmail, apiEmail);
-      
-      JSONObject esbPropertiesObj =
-            esbRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0)
-                  .getJSONObject("properties");
-      
-      JSONObject apiPropertiesObj =
-            apiRestResponse.getBody().getJSONObject("data").getJSONArray("users").getJSONObject(0)
-                  .getJSONObject("properties");
-      
-      Assert.assertNotEquals(esbPropertiesObj, null);
-      Assert.assertNotEquals(apiPropertiesObj, null);
-      
-   }
+
    
    /**
     * Positive test case for getUserById method with mandatory parameters.
@@ -500,7 +426,7 @@ public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase
     * @throws IOException Signals that an I/O exception has occurred.
     * @throws JSONException if JSON exception occurred.
     */
-   @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testListUsersWithOptionalParameters" }, description = "planyo {getUserById} integration test with mandatory parameters.")
+   @Test(groups = { "wso2.esb" }, description = "planyo {getUserById} integration test with mandatory parameters.")
    public void testGetUserByIdWithMandatoryParameters() throws IOException, JSONException {
    
       esbRequestHeadersMap.put("Action", "urn:getUserById");
@@ -613,122 +539,11 @@ public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase
       
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listVouchers_mandatory.json");
-      
-      JSONObject esbVoucherObject = esbRestResponse.getBody().getJSONObject("data").getJSONObject("results");
-      String voucherCode = esbVoucherObject.keys().next().toString();
-      
-      connectorProperties.setProperty("voucherCode", voucherCode);
-      
+
       String apiEndPoint = apiUrl + "?api_key=" + connectorProperties.getProperty("apiKey") + "&method=list_vouchers";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-      
-      int esbVoucherCount = esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").length();
-      int apiVoucherCount = apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").length();
-      
-      Assert.assertEquals(esbVoucherCount, apiVoucherCount);
-      
-      String esbVoucherCode =
-            esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("code");
-      
-      String apiVoucherCode =
-            apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("code");
-      
-      Assert.assertEquals(esbVoucherCode, apiVoucherCode);
-      
-      String esbReservationStartDate =
-            esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("reservation_start_date");
-      
-      String apiReservationStartDate =
-            apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("reservation_start_date");
-      
-      Assert.assertEquals(esbReservationStartDate, apiReservationStartDate);
-      
-   }
-   
-   /**
-    * Positive test case for listVouchers method with optional parameters.
-    * 
-    * @throws IOException Signals that an I/O exception has occurred.
-    * @throws JSONException if JSON exception occurred.
-    */
-   @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testListVouchersWithMandatoryParameters" }, description = "planyo {listVouchers} integration test with optional parameters.")
-   public void testListVouchersWithOptionalParameters() throws IOException, JSONException {
-   
-      esbRequestHeadersMap.put("Action", "urn:listVouchers");
-      
-      String voucherCode = connectorProperties.getProperty("voucherCode");
-      
-      RestResponse<JSONObject> esbRestResponse =
-            sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listVouchers_optional.json");
-      
-      String apiEndPoint =
-            apiUrl + "?api_key=" + connectorProperties.getProperty("apiKey")
-                  + "&method=list_vouchers&voucher_code_prefix=" + voucherCode;
-      RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-      
-      int esbVoucherCount = esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").length();
-      int apiVoucherCount = apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").length();
-      
-      Assert.assertEquals(esbVoucherCount, apiVoucherCount);
-      
-      String esbVoucherCode =
-            esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("code");
-      
-      String apiVoucherCode =
-            apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("code");
-      
-      Assert.assertEquals(esbVoucherCode, apiVoucherCode);
-      
-      String esbResources =
-            esbRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("resources");
-      
-      String apiResources =
-            apiRestResponse.getBody().getJSONObject("data").getJSONObject("results").getJSONObject(voucherCode)
-                  .getString("resources");
-      
-      Assert.assertEquals(esbResources, apiResources);
-      
-   }
-   
-   /**
-    * Negative test case for listVouchers method.
-    * 
-    * @throws IOException Signals that an I/O exception has occurred.
-    * @throws JSONException if JSON exception occurred.
-    */
-   @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testListVouchersWithOptionalParameters" }, description = "planyo {listVouchers} integration test with negative case.")
-   public void testListVouchersWithNegativeCase() throws IOException, JSONException {
-   
-      esbRequestHeadersMap.put("Action", "urn:listVouchers");
-      
-      RestResponse<JSONObject> esbRestResponse =
-            sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listVouchers_negative.json");
-      
-      int esbResponseCode = esbRestResponse.getBody().getInt("response_code");
-      
-      Assert.assertEquals(esbResponseCode, 3);
-      
-      String apiEndPoint =
-            apiUrl + "?api_key=" + connectorProperties.getProperty("apiKey")
-                  + "&method=list_vouchers&resource_id=INVALID";
-      RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndPoint, "GET", apiRequestHeadersMap);
-      
-      int apiResponseCode = apiRestResponse.getBody().getInt("response_code");
-      
-      Assert.assertEquals(esbResponseCode, apiResponseCode);
-      
-      String esbResponseMessage = esbRestResponse.getBody().getString("response_message");
-      String apiResponseMessage = apiRestResponse.getBody().getString("response_message");
-      
-      Assert.assertEquals(esbResponseMessage, apiResponseMessage);
-      
+       Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
+
    }
    
    /**
@@ -737,7 +552,7 @@ public class PlanyoConnectorIntegrationTest extends ConnectorIntegrationTestBase
     * @throws IOException Signals that an I/O exception has occurred.
     * @throws JSONException if JSON exception occurred.
     */
-   @Test(groups = { "wso2.esb" }, dependsOnMethods = { "testListVouchersWithNegativeCase" }, description = "planyo {listReservations} integration test with mandatory parameters.")
+   @Test(groups = { "wso2.esb" }, description = "planyo {listReservations} integration test with mandatory parameters.")
    public void testListReservationsWithMandatoryParameters() throws IOException, JSONException {
    
       esbRequestHeadersMap.put("Action", "urn:listReservations");

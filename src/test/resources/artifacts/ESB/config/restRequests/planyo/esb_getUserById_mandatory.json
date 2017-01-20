@@ -1,5 +1,5 @@
 {
    "apiUrl":"%s(apiUrl)",
    "apiKey":"%s(apiKey)",
-   "userId":%s(userId)
+   "userId":"%s(userId)"
 }
